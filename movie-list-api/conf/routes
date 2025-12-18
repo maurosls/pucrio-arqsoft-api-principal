@@ -1,0 +1,5 @@
+GET     /movie/suggestion/:userId    controllers.MovieController.getMovieSuggestion(userId: String)
+GET     /movie/:title                controllers.MovieController.getMovie(title: String)
+POST    /preferences                 controllers.MovieController.addPreference()
+GET     /preferences/:userId         controllers.MovieController.getUserPreferences(userId: String)
+
