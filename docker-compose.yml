@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  movies-provider:
+    build: ./pucrio-arqsoft-api-secund-ria
+    ports:
+      - "9090:9090"
+      - "8081:8081"
+    networks:
+      - movies-network
+    environment:
+      - OMDB_API_KEY=244ae6ab
+
+  movie-list-api:
+    build: ./pucrio-arqsoft-api-principal
+    ports:
+      - "9000:9000"
+    networks:
+      - movies-network
+    depends_on:
+      - movies-provider
+    environment:
+      - MOVIES_PROVIDER_URL=http://movies-provider:9090
+
+networks:
+  movies-network:
+    driver: bridge
