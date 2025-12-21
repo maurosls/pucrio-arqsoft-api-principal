@@ -1,3 +1,8 @@
+# API Principal - MVP do Sprint de Arquitetura de Software
+Trabalho da Pós- graduacao em Engenharia de software da PUC Rio realizado por Mauro Sergio Lopes dos Santos Junior. 
+
+Esse repositorio representa a API Principal do MVP.
+
 # Movie List API
 
 API de frontend baseada em Play Framework que atua como gateway para o serviço de filmes, fornecendo uma interface simplificada para aplicações cliente.
@@ -168,10 +173,10 @@ GET     /preferences/:userId         controllers.MovieController.getUserPreferen
 
 ### Pré-requisitos
 1. Movies Provider Service deve estar executando na porta 9090
-2. Java 17 ou superior
-3. SBT instalado
+2. Java 17 ou superior (para execução local)
+3. SBT instalado (para execução local)
 
-### Comandos de Execução
+### Opção 1: Execução Local
 ```bash
 # Executar em modo desenvolvimento
 sbt run
@@ -181,6 +186,59 @@ sbt compile
 
 # Executar testes
 sbt test
+```
+
+### Opção 2: Execução com Docker
+
+#### Executar apenas Movie List API
+```bash
+# Construir a imagem Docker
+docker build -t movie-list-api .
+
+# Executar o container (certifique-se que movies-provider-service está rodando)
+docker run -p 9000:9000 movie-list-api
+```
+
+#### Executar ambos os serviços com Docker
+```bash
+# 1. Primeiro, execute o Movies Provider Service
+cd ../pucrio-arqsoft-api-secund-ria
+docker build -t movies-provider-service .
+docker run -d --name movies-provider -p 9090:9090 -p 8081:8081 movies-provider-service
+
+# 2. Em seguida, execute o Movie List API
+cd ../pucrio-arqsoft-api-principal
+docker build -t movie-list-api .
+docker run -p 9000:9000 --link movies-provider:movies-provider movie-list-api
+```
+
+#### Usando Docker Network (Recomendado)
+```bash
+# Criar uma rede Docker
+docker network create movies-network
+
+# Executar Movies Provider Service
+cd ../pucrio-arqsoft-api-secund-ria
+docker build -t movies-provider-service .
+docker run -d --name movies-provider --network movies-network -p 9090:9090 -p 8081:8081 movies-provider-service
+
+# Executar Movie List API
+cd ../pucrio-arqsoft-api-principal
+docker build -t movie-list-api .
+docker run --name movie-list-api --network movies-network -p 9000:9000 movie-list-api
+```
+
+#### Usando Docker Compose (Mais Fácil)
+```bash
+# No diretório raiz do projeto (arq-soft)
+cd ..
+docker-compose up --build
+
+# Para executar em background
+docker-compose up -d --build
+
+# Para parar os serviços
+docker-compose down
 ```
 
 **Serviço Disponível:**
