@@ -4,6 +4,10 @@ scalaVersion := "2.13.12"
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
+// Use standard Scala source directories
+Compile / scalaSource := baseDirectory.value / "src" / "main" / "scala"
+Test / scalaSource := baseDirectory.value / "src" / "test" / "scala"
+
 libraryDependencies ++= Seq(
   guice,
   ws,
